@@ -1,4 +1,14 @@
 import type { Card } from '../types';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  Paper,
+  Typography,
+  Box,
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 interface Props {
   cards: Card[];
@@ -7,25 +17,40 @@ interface Props {
 
 export default function CardList({ cards, onAddCard }: Props) {
   return (
-    <div style={{ border: '2px dashed gray', padding: '1rem', width: '45%' }}>
-      <h2>📚 Card Database</h2>
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
+    <Paper
+      elevation={3}
+      sx={{ padding: 2, flex: 1, height: '100%', overflow: 'auto' }}
+    >
+      <Typography variant="h5" component="h2" gutterBottom>
+        📚 Card Database
+      </Typography>
+      <List>
         {cards.map((card) => (
-          <li
+          <ListItem
             key={card.id}
-            style={{
-              marginBottom: '10px',
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
+            secondaryAction={
+              <Button
+                variant="contained"
+                size="small"
+                startIcon={<AddIcon />}
+                onClick={() => onAddCard(card)}
+              >
+                Add
+              </Button>
+            }
+            divider
           >
-            <span>
-              <strong>{card.name}</strong> (Cost: {card.cost}) - {card.type}
-            </span>
-            <button onClick={() => onAddCard(card)}>+ Add</button>
-          </li>
+            <ListItemText
+              primary={
+                <Box component="span" fontWeight="bold">
+                  {card.name}
+                </Box>
+              }
+              secondary={`Cost: ${card.cost} • ${card.type}`}
+            />
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Paper>
   );
 }

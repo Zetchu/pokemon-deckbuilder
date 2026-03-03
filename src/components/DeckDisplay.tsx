@@ -1,4 +1,15 @@
 import type { DeckItem } from '../types';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Paper,
+  Typography,
+  Chip,
+  Box,
+} from '@mui/material';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 interface Props {
   deck: DeckItem[];
@@ -7,29 +18,52 @@ interface Props {
 
 export default function DeckDisplay({ deck, onRemoveCard }: Props) {
   return (
-    <div style={{ border: '2px solid blue', padding: '1rem', width: '45%' }}>
-      <h2>🃏 Your Deck</h2>
+    <Paper elevation={3} sx={{ padding: 2, flex: 1, minHeight: '300px' }}>
+      <Typography variant="h5" component="h2" gutterBottom>
+        🃏 Your Deck
+      </Typography>
+
       {deck.length === 0 ? (
-        <p>Your deck is looking a little empty. Add some cards!</p>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{ mt: 2, textAlign: 'center' }}
+        >
+          Your deck is looking a little empty. Add some cards from the database!
+        </Typography>
       ) : (
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
+        <List>
           {deck.map((item) => (
-            <li
+            <ListItem
               key={item.id}
-              style={{
-                marginBottom: '10px',
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
+              secondaryAction={
+                <IconButton
+                  edge="end"
+                  aria-label="remove"
+                  onClick={() => onRemoveCard(item.id)}
+                  color="error"
+                >
+                  <RemoveCircleOutlineIcon />
+                </IconButton>
+              }
+              divider
             >
-              <span>
-                <strong>{item.count}x</strong> {item.name}
-              </span>
-              <button onClick={() => onRemoveCard(item.id)}>- Remove 1</button>
-            </li>
+              <ListItemText
+                primary={
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Chip
+                      label={`${item.count}x`}
+                      size="small"
+                      color="primary"
+                    />
+                    <Typography fontWeight="bold">{item.name}</Typography>
+                  </Box>
+                }
+              />
+            </ListItem>
           ))}
-        </ul>
+        </List>
       )}
-    </div>
+    </Paper>
   );
 }
