@@ -23,9 +23,6 @@ describe('DeckBuilderPage', () => {
     // Verify deck update
     expect(screen.getByText('1 / 40')).toBeInTheDocument();
     expect(screen.getByText('1x')).toBeInTheDocument();
-    // Verify the card name is present in the deck (it's also in the source list so this might be tricky,
-    // but the deck list also renders the name. We can check for uniqueness or structure if needed,
-    // but simple text presence is a good start for integration)
 
     // Add same card again
     await user.click(addButton);
@@ -57,8 +54,5 @@ describe('DeckBuilderPage', () => {
 
     // Expect alert
     expect(await screen.findByRole('alert')).toHaveTextContent('3 copies');
-
-    // Warning: The error message might disappear after 3s, so this test might depend on timing,
-    // but in jsdom without timers mocked, it should be fine as it's immediate.
   });
 });
