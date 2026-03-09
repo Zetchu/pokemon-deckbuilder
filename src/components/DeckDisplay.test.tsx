@@ -4,7 +4,7 @@ import DeckDisplay from './DeckDisplay';
 
 describe('DeckDisplay', () => {
   it('renders with placeholder text when deck is empty', () => {
-    const deck = [];
+    const deck: any[] = [];
     render(<DeckDisplay deck={deck} onRemoveCard={() => {}} />);
     expect(
       screen.getByText(/Your deck is looking a little empty/)
