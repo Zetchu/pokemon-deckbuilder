@@ -1,23 +1,32 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import DeckDisplay from './DeckDisplay';
+import { DeckProvider } from '../context';
+import { RIFTBOUND_CARDS } from '../data/mockCards';
 import type { DeckItem } from '../types';
 
 describe('DeckDisplay', () => {
-  it('renders with placeholder text when deck is emptyy', () => {
-    const deck: DeckItem[] = [];
-    render(<DeckDisplay deck={deck} onRemoveCard={() => {}} />);
+  const mockDeck: DeckItem[] = [{ ...RIFTBOUND_CARDS[0], count: 2 }];
+
+  it('renders with placeholder text when deck is empty', () => {
+    render(
+      <DeckProvider initialCards={RIFTBOUND_CARDS} initialDeck={[]}>
+        <DeckDisplay />
+      </DeckProvider>
+    );
+
     expect(
       screen.getByText(/Your deck is looking a little empty/)
     ).toBeInTheDocument();
   });
 
   it('renders with cards when present', () => {
-    const deck = [
-      { id: 'c1', name: "Teemo's Mushroom", type: 'Trap', cost: 1, count: 2 },
-    ];
-    render(<DeckDisplay deck={deck} onRemoveCard={() => {}} />);
-    expect(screen.getByText("Teemo's Mushroom")).toBeInTheDocument();
-    expect(screen.getByText('2x')).toBeInTheDocument();
+    render(
+      <DeckProvider initialCards={RIFTBOUND_CARDS} initialDeck={mockDeck}>
+        <DeckDisplay />
+      </DeckProvider>
+    );
+
+    expect(screen.getByText(/Teemo's Mushroom \(x2\)/)).toBeInTheDocument();
   });
 });

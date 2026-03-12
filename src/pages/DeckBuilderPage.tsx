@@ -1,72 +1,28 @@
-import { Suspense, useState, useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Paper, Typography, Grid, Box, Alert, Button } from '@mui/material';
-import CardList from '../components/CardList';
+
 import DeckDisplay from '../components/DeckDisplay';
 import { useCards } from '../api/cards';
-import { checkDeckLimits } from '../utils/deckRules';
-import type { Card, DeckItem } from '../types';
+import { DeckProvider, useDeck } from '../context';
+import CardList from '../components/CardList';
 
-function DeckBuilderContent() {
-  const [cards, { refresh }] = useCards();
-  const [deck, setDeck] = useState<DeckItem[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-
-  const displayedCards = cards || [];
+function DeckBuilderLayout({ onRefresh }: { onRefresh: () => void }) {
+  const { deck, error } = useDeck();
 
   const totalCards = useMemo(() => {
     return deck.reduce((sum, item) => sum + item.count, 0);
   }, [deck]);
 
-  const handleAddCard = (card: Card) => {
-    const validation = checkDeckLimits(deck, card);
-
-    if (!validation.allowed) {
-      setErrorMessage(validation.reason || 'Cannot add card.');
-      // Auto-hide error after 3s
-      setTimeout(() => setErrorMessage(''), 3000);
-      return;
-    }
-
-    setErrorMessage('');
-
-    setDeck((prevDeck) => {
-      const existing = prevDeck.find((item) => item.id === card.id);
-      if (existing) {
-        return prevDeck.map((item) =>
-          item.id === card.id ? { ...item, count: item.count + 1 } : item
-        );
-      }
-      return [...prevDeck, { ...card, count: 1 }];
-    });
-  };
-
-  const handleRemoveCard = (cardId: string) => {
-    setErrorMessage('');
-    setDeck((prevDeck) => {
-      const existing = prevDeck.find((item) => item.id === cardId);
-      if (existing && existing.count > 1) {
-        return prevDeck.map((item) =>
-          item.id === cardId ? { ...item, count: item.count - 1 } : item
-        );
-      }
-      return prevDeck.filter((item) => item.id !== cardId);
-    });
-  };
-
   return (
     <>
       <Box sx={{ mb: 4, display: 'flex', gap: 2, alignItems: 'center' }}>
-        <Button variant="contained" onClick={refresh}>
+        <Button variant="contained" onClick={onRefresh}>
           Update Card List
         </Button>
-        {errorMessage && (
-          <Alert
-            severity="error"
-            onClose={() => setErrorMessage('')}
-            sx={{ flexGrow: 1 }}
-          >
-            {errorMessage}
+        {error && (
+          <Alert severity="error" sx={{ flexGrow: 1 }}>
+            {error}
           </Alert>
         )}
       </Box>
@@ -93,13 +49,26 @@ function DeckBuilderContent() {
 
       <Grid container spacing={4}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <CardList cards={displayedCards} onAddCard={handleAddCard} />
+          <CardList />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <DeckDisplay deck={deck} onRemoveCard={handleRemoveCard} />
+          <DeckDisplay />
         </Grid>
       </Grid>
     </>
+  );
+}
+
+function DeckBuilderContent() {
+  const [cards, { refresh }] = useCards();
+
+  // Handle the initial undefined state from useAsync (before effect runs)
+  if (!cards) return null;
+
+  return (
+    <DeckProvider initialCards={cards}>
+      <DeckBuilderLayout onRefresh={refresh} />
+    </DeckProvider>
   );
 }
 

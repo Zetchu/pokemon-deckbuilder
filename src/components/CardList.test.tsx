@@ -1,17 +1,19 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import CardList from './CardList';
+import { DeckProvider } from '../context';
 import { RIFTBOUND_CARDS } from '../data/mockCards';
-import { MemoryRouter } from 'react-router-dom';
 
 describe('CardList', () => {
   it('renders correctly', () => {
+    // Mock the context provider
     render(
-      <MemoryRouter>
-        <CardList cards={RIFTBOUND_CARDS} onAddCard={() => {}} />
-      </MemoryRouter>
+      <DeckProvider initialCards={RIFTBOUND_CARDS}>
+        <CardList />
+      </DeckProvider>
     );
+
     expect(screen.getByText('📚 Card Database')).toBeInTheDocument();
-    expect(screen.getByText("Teemo's Mushroom")).toBeInTheDocument();
+    expect(screen.getByText(RIFTBOUND_CARDS[0].name)).toBeInTheDocument();
   });
 });

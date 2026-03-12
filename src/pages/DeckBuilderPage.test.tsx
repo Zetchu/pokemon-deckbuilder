@@ -25,19 +25,19 @@ describe('DeckBuilderPage', () => {
 
     // Verify deck update
     expect(screen.getByText('1 / 40')).toBeInTheDocument();
-    expect(screen.getByText('1x')).toBeInTheDocument();
+    expect(screen.getByText(/\(x1\)/)).toBeInTheDocument();
 
     // Add same card again
     await user.click(addButton);
     expect(screen.getByText('2 / 40')).toBeInTheDocument();
-    expect(screen.getByText('2x')).toBeInTheDocument();
+    expect(screen.getByText(/\(x2\)/)).toBeInTheDocument();
 
     // Remove card
     const removeButton = screen.getByLabelText('remove');
     await user.click(removeButton);
 
     expect(screen.getByText('1 / 40')).toBeInTheDocument();
-    expect(screen.getByText('1x')).toBeInTheDocument();
+    expect(screen.getByText(/\(x1\)/)).toBeInTheDocument();
   });
 
   it('shows error message when adding more than 3 copies', async () => {

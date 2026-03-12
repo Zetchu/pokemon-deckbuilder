@@ -1,4 +1,4 @@
-import type { Card } from '../types';
+import { useDeck, useDeckActions } from '../context';
 import {
   List,
   ListItem,
@@ -6,16 +6,13 @@ import {
   Button,
   Paper,
   Typography,
-  Box,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 
-interface Props {
-  cards: Card[];
-  onAddCard: (card: Card) => void;
-}
+export default function CardList() {
+  const { availableCards } = useDeck();
+  const { addCardToDeck } = useDeckActions();
 
-export default function CardList({ cards, onAddCard }: Props) {
   return (
     <Paper
       elevation={3}
@@ -25,7 +22,7 @@ export default function CardList({ cards, onAddCard }: Props) {
         📚 Card Database
       </Typography>
       <List>
-        {cards.map((card) => (
+        {availableCards.map((card) => (
           <ListItem
             key={card.id}
             secondaryAction={
@@ -33,7 +30,7 @@ export default function CardList({ cards, onAddCard }: Props) {
                 variant="contained"
                 size="small"
                 startIcon={<AddIcon />}
-                onClick={() => onAddCard(card)}
+                onClick={() => addCardToDeck(card)}
               >
                 Add
               </Button>
@@ -41,12 +38,8 @@ export default function CardList({ cards, onAddCard }: Props) {
             divider
           >
             <ListItemText
-              primary={
-                <Box component="span" fontWeight="bold">
-                  {card.name}
-                </Box>
-              }
-              secondary={`Cost: ${card.cost} • ${card.type}`}
+              primary={card.name}
+              secondary={`${card.type} • Cost: ${card.cost}`}
             />
           </ListItem>
         ))}
