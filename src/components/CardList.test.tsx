@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import CardList from './CardList';
-import { DeckProvider } from '../context';
+
+import { DeckProvider } from '../contexts/DeckContext';
 import { RIFTBOUND_CARDS } from '../data/mockCards';
+import CardList from './CardList';
 
 describe('CardList', () => {
   it('renders correctly', () => {

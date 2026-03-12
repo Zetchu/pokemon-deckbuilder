@@ -14,5 +14,6 @@ describe('MainLayout', () => {
     expect(screen.getByText(/Riftbound Decksmith/)).toBeInTheDocument();
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('Builder')).toBeInTheDocument();
+    expect(screen.getByLabelText('toggle theme')).toBeInTheDocument();
   });
 });

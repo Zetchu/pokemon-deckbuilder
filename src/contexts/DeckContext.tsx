@@ -1,9 +1,9 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Card, DeckItem } from './types';
-import { createInitialState } from './logic';
-import type { State } from './logic';
-import { checkDeckLimits } from './utils/deckRules';
+import type { Card, DeckItem } from '../types';
+import { createInitialState } from '../logic';
+import type { State } from '../logic';
+import { checkDeckLimits } from '../utils/deckRules';
 
 type DeckContextType = {
   state: State;

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import DeckDisplay from './DeckDisplay';
-import { DeckProvider } from '../context';
+import { DeckProvider } from '../contexts/DeckContext';
 import { RIFTBOUND_CARDS } from '../data/mockCards';
 import type { DeckItem } from '../types';
 

@@ -6,9 +6,14 @@ import {
   Container,
   Box,
   Button,
+  IconButton,
 } from '@mui/material';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
+import { useColorMode } from '../contexts/ColorModeContext';
 
 export default function MainLayout() {
+  const { mode, toggleColorMode } = useColorMode();
+
   return (
     <>
       <AppBar position="static" sx={{ mb: 4 }}>
@@ -23,6 +28,14 @@ export default function MainLayout() {
             <Button component={Link} to="/builder" color="inherit">
               Builder
             </Button>
+            <IconButton
+              sx={{ ml: 1 }}
+              onClick={toggleColorMode}
+              color="inherit"
+              aria-label="toggle theme"
+            >
+              {mode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>

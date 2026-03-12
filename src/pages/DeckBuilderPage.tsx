@@ -4,7 +4,7 @@ import { Paper, Typography, Grid, Box, Alert, Button } from '@mui/material';
 
 import DeckDisplay from '../components/DeckDisplay';
 import { useCards } from '../api/cards';
-import { DeckProvider, useDeck } from '../context';
+import { DeckProvider, useDeck } from '../contexts/DeckContext';
 import CardList from '../components/CardList';
 
 function DeckBuilderLayout({ onRefresh }: { onRefresh: () => void }) {
