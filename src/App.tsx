@@ -9,15 +9,9 @@ import { DeckProvider } from './shared/contexts/DeckContext';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Suspense } from 'react';
 
-// Wrapper to provide DeckContext globally so library can inject decks
-// Note: In a larger app, you'd likely want a GlobalDeckContext or similar at the root
-// But here, we wrap the Routes with a provider that gets data
 function AppContent() {
   const [cards] = useCards();
 
-  // While loading cards, we can show a loader or just render children (library might not need cards immediately if just viewing list)
-  // However, to 'Edit' correctly, we need the "availableCards" in context.
-  // For simplicity, we'll fetch cards here.
   if (!cards) return <div>Loading resources...</div>;
 
   return (
