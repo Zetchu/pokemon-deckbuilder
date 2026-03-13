@@ -1,8 +1,10 @@
 import useAsync from '../hooks/useAsync';
 import type { Card } from '../types';
 
+const API_BASE_URL = import.meta.env.DEV ? '/api' : 'https://api.riftcodex.com';
+
 export async function fetchAllCards(): Promise<Card[]> {
-  const response = await fetch('/api/cards');
+  const response = await fetch(`${API_BASE_URL}/cards`);
   if (!response.ok) throw new Error('Could not fetch cards');
   const json = await response.json();
 
