@@ -24,7 +24,7 @@ export default function DeckLibraryPage() {
   }, []);
 
   const handleLoadDeck = (deck: SavedDeck) => {
-    loadDeck(deck.items);
+    loadDeck(deck.items, deck.id, deck.name);
     navigate('/builder');
   };
 

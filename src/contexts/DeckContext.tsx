@@ -8,10 +8,13 @@ import { checkDeckLimits } from '../utils/deckRules';
 type DeckContextType = {
   state: State;
   error: string;
+  activeDeckId: string | null;
+  activeDeckName: string;
   actions: {
     addCardToDeck: (card: Card) => void;
     removeCardFromDeck: (cardId: string) => void;
-    loadDeck: (deck: DeckItem[]) => void;
+    loadDeck: (deck: DeckItem[], id?: string, name?: string) => void;
+    clearDeck: () => void;
   };
 };
 
@@ -30,6 +33,8 @@ export function DeckProvider({
     createInitialState(initialCards, initialDeck)
   );
   const [error, setError] = useState('');
+  const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
+  const [activeDeckName, setActiveDeckName] = useState('');
 
   const addCardToDeck = (card: Card) => {
     // Check limits
@@ -70,8 +75,18 @@ export function DeckProvider({
       return { ...prevState, deck: newDeck };
     });
   };
-  const loadDeck = (newDeck: DeckItem[]) => {
+
+  const loadDeck = (newDeck: DeckItem[], id?: string, name?: string) => {
     setState((prevState) => ({ ...prevState, deck: newDeck }));
+    setActiveDeckId(id || null);
+    setActiveDeckName(name || '');
+    setError('');
+  };
+
+  const clearDeck = () => {
+    setState((prevState) => ({ ...prevState, deck: [] }));
+    setActiveDeckId(null);
+    setActiveDeckName('');
     setError('');
   };
 
@@ -80,7 +95,9 @@ export function DeckProvider({
       value={{
         state,
         error,
-        actions: { addCardToDeck, removeCardFromDeck, loadDeck },
+        activeDeckId,
+        activeDeckName,
+        actions: { addCardToDeck, removeCardFromDeck, loadDeck, clearDeck },
       }}
     >
       {children}
@@ -94,7 +111,13 @@ export function useDeck() {
   if (!context) {
     throw new Error('useDeck must be used within a DeckProvider');
   }
-  return { ...context.state, error: context.error };
+  return {
+    ...context.state,
+    error: context.error,
+    activeDeckId: context.activeDeckId,
+    activeDeckName: context.activeDeckName,
+    ...context.actions,
+  };
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

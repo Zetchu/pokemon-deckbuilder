@@ -13,27 +13,56 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import SaveIcon from '@mui/icons-material/Save';
+import AddIcon from '@mui/icons-material/Add';
 
 import DeckDisplay from '../components/DeckDisplay';
 import { useDeck } from '../contexts/DeckContext';
 import CardList from '../components/CardList';
-import { saveDeck } from '../utils/storage';
+import { saveDeck, updateDeck } from '../utils/storage';
 
 function DeckBuilderLayout() {
-  const { deck, error } = useDeck();
+  const { deck, error, activeDeckId, activeDeckName, loadDeck, clearDeck } =
+    useDeck();
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [deckName, setDeckName] = useState('');
+  const [deckName, setDeckName] = useState(activeDeckName);
 
   const totalCards = useMemo(() => {
     return deck.reduce((sum, item) => sum + item.count, 0);
   }, [deck]);
 
+  const handleOpenSaveDialog = () => {
+    setDeckName(activeDeckName);
+    setSaveDialogOpen(true);
+  };
+
   const handleSaveDeck = () => {
     if (!deckName.trim()) return;
-    saveDeck(deckName, deck);
+
+    let saved;
+    if (activeDeckId) {
+      // Update existing
+      saved = updateDeck(activeDeckId, deckName, deck);
+      alert('Deck updated successfully!');
+    } else {
+      // Save new
+      saved = saveDeck(deckName, deck);
+      alert('Deck saved successfully!');
+    }
+    loadDeck(deck, saved.id, saved.name);
     setSaveDialogOpen(false);
-    setDeckName('');
-    alert('Deck saved successfully!');
+  };
+
+  const handleNewDeck = () => {
+    if (deck.length > 0) {
+      if (
+        !window.confirm(
+          'Are you sure you want to start a new deck? Unsaved changes will be lost.'
+        )
+      ) {
+        return;
+      }
+    }
+    clearDeck();
   };
 
   return (
@@ -41,12 +70,19 @@ function DeckBuilderLayout() {
       <Box sx={{ mb: 4, display: 'flex', gap: 2, alignItems: 'center' }}>
         <Button
           variant="contained"
+          startIcon={<AddIcon />}
+          onClick={handleNewDeck}
+        >
+          New Deck
+        </Button>
+        <Button
+          variant="contained"
           color="secondary"
           startIcon={<SaveIcon />}
-          onClick={() => setSaveDialogOpen(true)}
+          onClick={handleOpenSaveDialog}
           disabled={deck.length === 0}
         >
-          Save Deck
+          {activeDeckId ? 'Update Deck' : 'Save Deck'}
         </Button>
         {error && (
           <Alert severity="error" sx={{ flexGrow: 1 }}>
