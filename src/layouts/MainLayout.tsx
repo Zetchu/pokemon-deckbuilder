@@ -39,6 +39,9 @@ export default function MainLayout() {
             <Button component={Link} to="/builder" color="inherit">
               Builder
             </Button>
+            <Button component={Link} to="/library" color="inherit">
+              Library
+            </Button>
             <IconButton
               sx={{ ml: 1 }}
               onClick={toggleColorMode}

@@ -1,25 +1,52 @@
-import { Suspense, useMemo } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { Paper, Typography, Box, Alert, Button } from '@mui/material';
+import { useState, useMemo } from 'react';
+import {
+  Paper,
+  Typography,
+  Box,
+  Alert,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+} from '@mui/material';
 import Grid from '@mui/material/Grid';
+import SaveIcon from '@mui/icons-material/Save';
 
 import DeckDisplay from '../components/DeckDisplay';
-import { useCards } from '../api/cards';
-import { DeckProvider, useDeck } from '../contexts/DeckContext';
+import { useDeck } from '../contexts/DeckContext';
 import CardList from '../components/CardList';
+import { saveDeck } from '../utils/storage';
 
-function DeckBuilderLayout({ onRefresh }: { onRefresh: () => void }) {
+function DeckBuilderLayout() {
   const { deck, error } = useDeck();
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [deckName, setDeckName] = useState('');
 
   const totalCards = useMemo(() => {
     return deck.reduce((sum, item) => sum + item.count, 0);
   }, [deck]);
 
+  const handleSaveDeck = () => {
+    if (!deckName.trim()) return;
+    saveDeck(deckName, deck);
+    setSaveDialogOpen(false);
+    setDeckName('');
+    alert('Deck saved successfully!');
+  };
+
   return (
     <>
       <Box sx={{ mb: 4, display: 'flex', gap: 2, alignItems: 'center' }}>
-        <Button variant="contained" onClick={onRefresh}>
-          Update Card List
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<SaveIcon />}
+          onClick={() => setSaveDialogOpen(true)}
+          disabled={deck.length === 0}
+        >
+          Save Deck
         </Button>
         {error && (
           <Alert severity="error" sx={{ flexGrow: 1 }}>
@@ -27,6 +54,31 @@ function DeckBuilderLayout({ onRefresh }: { onRefresh: () => void }) {
           </Alert>
         )}
       </Box>
+
+      <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
+        <DialogTitle>Save Your Deck</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Deck Name"
+            fullWidth
+            variant="outlined"
+            value={deckName}
+            onChange={(e) => setDeckName(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
+          <Button
+            onClick={handleSaveDeck}
+            variant="contained"
+            disabled={!deckName.trim()}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       <Paper
         elevation={1}
@@ -60,25 +112,6 @@ function DeckBuilderLayout({ onRefresh }: { onRefresh: () => void }) {
   );
 }
 
-function DeckBuilderContent() {
-  const [cards, { refresh }] = useCards();
-
-  // Handle the initial undefined state from useAsync (before effect runs)
-  if (!cards) return null;
-
-  return (
-    <DeckProvider initialCards={cards}>
-      <DeckBuilderLayout onRefresh={refresh} />
-    </DeckProvider>
-  );
-}
-
 export default function DeckBuilderPage() {
-  return (
-    <ErrorBoundary fallback={<div>Failed to load Riftbound cards.</div>}>
-      <Suspense fallback={<div>Loading card database...</div>}>
-        <DeckBuilderContent />
-      </Suspense>
-    </ErrorBoundary>
-  );
+  return <DeckBuilderLayout />;
 }

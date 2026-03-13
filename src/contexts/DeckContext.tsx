@@ -11,6 +11,7 @@ type DeckContextType = {
   actions: {
     addCardToDeck: (card: Card) => void;
     removeCardFromDeck: (cardId: string) => void;
+    loadDeck: (deck: DeckItem[]) => void;
   };
 };
 
@@ -69,13 +70,17 @@ export function DeckProvider({
       return { ...prevState, deck: newDeck };
     });
   };
+  const loadDeck = (newDeck: DeckItem[]) => {
+    setState((prevState) => ({ ...prevState, deck: newDeck }));
+    setError('');
+  };
 
   return (
     <DeckContext.Provider
       value={{
         state,
         error,
-        actions: { addCardToDeck, removeCardFromDeck },
+        actions: { addCardToDeck, removeCardFromDeck, loadDeck },
       }}
     >
       {children}
