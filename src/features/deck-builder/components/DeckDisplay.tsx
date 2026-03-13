@@ -1,4 +1,4 @@
-import { useDeck, useDeckActions } from '../contexts/DeckContext';
+import { useDeck, useDeckActions } from '../../../shared/contexts/DeckContext';
 import {
   List,
   ListItem,

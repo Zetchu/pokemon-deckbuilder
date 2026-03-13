@@ -16,9 +16,9 @@ import SaveIcon from '@mui/icons-material/Save';
 import AddIcon from '@mui/icons-material/Add';
 
 import DeckDisplay from '../components/DeckDisplay';
-import { useDeck } from '../contexts/DeckContext';
+import { useDeck } from '../../../shared/contexts/DeckContext';
 import CardList from '../components/CardList';
-import { saveDeck, updateDeck } from '../utils/storage';
+import { saveDeck, updateDeck } from '../../../shared/utils/storage';
 
 function DeckBuilderLayout() {
   const { deck, error, activeDeckId, activeDeckName, loadDeck, clearDeck } =

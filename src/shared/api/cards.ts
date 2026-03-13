@@ -1,4 +1,4 @@
-import useAsync from '../shared/useAsync/useAsync';
+import useAsync from '../hooks/useAsync';
 import type { Card } from '../types';
 
 export async function fetchAllCards(): Promise<Card[]> {

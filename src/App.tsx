@@ -1,10 +1,10 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import MainLayout from './layouts/MainLayout';
-import HomePage from './pages/HomePage';
-import DeckBuilderPage from './pages/DeckBuilderPage';
-import DeckLibraryPage from './pages/DeckLibraryPage';
-import { useCards } from './api/cards';
-import { DeckProvider } from './contexts/DeckContext';
+import MainLayout from './shared/components/MainLayout';
+import HomePage from './features/home/pages/HomePage';
+import DeckBuilderPage from './features/deck-builder/pages/DeckBuilderPage';
+import DeckLibraryPage from './features/deck-library/pages/DeckLibraryPage';
+import { useCards } from './shared/api/cards';
+import { DeckProvider } from './shared/contexts/DeckContext';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Suspense } from 'react';
 

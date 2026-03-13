@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Typography,
   Paper,
@@ -10,18 +10,18 @@ import {
 import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { loadDecks, deleteDeck, type SavedDeck } from '../utils/storage';
-import { useDeckActions } from '../contexts/DeckContext';
+import {
+  loadDecks,
+  deleteDeck,
+  type SavedDeck,
+} from '../../../shared/utils/storage';
+import { useDeckActions } from '../../../shared/contexts/DeckContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function DeckLibraryPage() {
-  const [decks, setDecks] = useState<SavedDeck[]>([]);
+  const [decks, setDecks] = useState<SavedDeck[]>(() => loadDecks());
   const { loadDeck } = useDeckActions();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    setDecks(loadDecks());
-  }, []);
 
   const handleLoadDeck = (deck: SavedDeck) => {
     loadDeck(deck.items, deck.id, deck.name);

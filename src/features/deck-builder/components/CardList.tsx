@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useDeck, useDeckActions } from '../contexts/DeckContext';
+import { useDeck, useDeckActions } from '../../../shared/contexts/DeckContext';
 import {
   Card as MuiCard,
   CardMedia,
@@ -19,7 +19,7 @@ import {
 import Grid from '@mui/material/Grid';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import { formatCardText } from '../utils/textFormatter';
+import { formatCardText } from '../../../shared/utils/textFormatter';
 
 export default function CardList() {
   const { availableCards } = useDeck();

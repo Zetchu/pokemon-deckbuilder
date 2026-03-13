@@ -1,4 +1,4 @@
-import type { Card, DeckItem } from './types';
+import type { Card, DeckItem } from '../types';
 
 export type State = {
   availableCards: Card[];
