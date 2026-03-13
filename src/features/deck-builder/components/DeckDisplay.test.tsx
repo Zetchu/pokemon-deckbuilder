@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import DeckDisplay from './DeckDisplay';
-import { DeckProvider } from '../contexts/DeckContext';
-import { RIFTBOUND_CARDS } from '../data/mockCards';
-import type { DeckItem } from '../types';
+import { DeckProvider } from '../../../shared/contexts/DeckContext';
+import { RIFTBOUND_CARDS } from '../../../shared/data/mockCards';
+import type { DeckItem } from '../../../shared/types';
 
 describe('DeckDisplay', () => {
   const mockDeck: DeckItem[] = [{ ...RIFTBOUND_CARDS[0], count: 2 }];
@@ -27,6 +27,6 @@ describe('DeckDisplay', () => {
       </DeckProvider>
     );
 
-    expect(screen.getByText(/Teemo's Mushroom \(x2\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Rift Guardian \(x2\)/)).toBeInTheDocument();
   });
 });

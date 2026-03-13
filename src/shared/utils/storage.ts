@@ -62,6 +62,11 @@ export function loadDecks(): SavedDeck[] {
   }
 }
 
+export function getDeck(id: string): SavedDeck | null {
+  const decks = loadDecks();
+  return decks.find((d) => d.id === id) || null;
+}
+
 export function deleteDeck(id: string): void {
   const existingDecks = loadDecks();
   const updatedDecks = existingDecks.filter((deck) => deck.id !== id);

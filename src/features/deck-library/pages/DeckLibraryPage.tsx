@@ -10,6 +10,7 @@ import {
 import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
   loadDecks,
   deleteDeck,
@@ -105,6 +106,13 @@ export default function DeckLibraryPage() {
                     gap: 1,
                   }}
                 >
+                  <Button
+                    variant="contained"
+                    startIcon={<VisibilityIcon />}
+                    onClick={() => navigate(`/deck/${deck.id}`)}
+                  >
+                    View
+                  </Button>
                   <Button
                     variant="outlined"
                     startIcon={<EditIcon />}

@@ -2,16 +2,21 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import DeckBuilderPage from './DeckBuilderPage';
 import userEvent from '@testing-library/user-event';
-import { RIFTBOUND_CARDS } from '../data/mockCards';
+import { DeckProvider } from '../../../shared/contexts/DeckContext';
+import { RIFTBOUND_CARDS } from '../../../shared/data/mockCards';
 
-vi.mock('../api/cards', () => ({
+vi.mock('../../../shared/api/cards', () => ({
   useCards: () => [RIFTBOUND_CARDS, { refresh: vi.fn() }],
 }));
 
 describe('DeckBuilderPage', () => {
   it('renders correctly and allows user to add and remove cards', async () => {
     const user = userEvent.setup();
-    render(<DeckBuilderPage />);
+    render(
+      <DeckProvider initialCards={RIFTBOUND_CARDS}>
+        <DeckBuilderPage />
+      </DeckProvider>
+    );
 
     // Check initial state
     expect(screen.getByText('Deck Status')).toBeInTheDocument();
@@ -42,7 +47,11 @@ describe('DeckBuilderPage', () => {
 
   it('shows error message when adding more than 3 copies', async () => {
     const user = userEvent.setup();
-    render(<DeckBuilderPage />);
+    render(
+      <DeckProvider initialCards={RIFTBOUND_CARDS}>
+        <DeckBuilderPage />
+      </DeckProvider>
+    );
 
     const addButtons = screen.getAllByText('Add');
     const firstAddButton = addButtons[0];
