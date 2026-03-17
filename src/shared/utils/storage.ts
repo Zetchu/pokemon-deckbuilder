@@ -1,5 +1,5 @@
 // src/utils/storage.ts
-import type { DeckItem } from '../types';
+import type { DeckItem } from '../pokemon/types';
 
 export interface SavedDeck {
   id: string;
@@ -9,6 +9,11 @@ export interface SavedDeck {
 }
 
 const STORAGE_KEY = 'riftbound_decks';
+
+function loadDecks(): SavedDeck[] {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  return stored ? JSON.parse(stored) : [];
+}
 
 export function saveDeck(name: string, deck: DeckItem[]): SavedDeck {
   const newDeck: SavedDeck = {
@@ -47,28 +52,19 @@ export function updateDeck(
   const updatedDecks = [...existingDecks];
   updatedDecks[deckIndex] = updatedDeck;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedDecks));
-
   return updatedDeck;
 }
 
-export function loadDecks(): SavedDeck[] {
-  const json = localStorage.getItem(STORAGE_KEY);
-  if (!json) return [];
-  try {
-    return JSON.parse(json);
-  } catch (e) {
-    console.error('Failed to parse saved decks', e);
-    return [];
-  }
+export function getDecks(): SavedDeck[] {
+  return loadDecks();
 }
 
-export function getDeck(id: string): SavedDeck | null {
-  const decks = loadDecks();
-  return decks.find((d) => d.id === id) || null;
+export function getDeck(id: string): SavedDeck | undefined {
+  return loadDecks().find((d) => d.id === id);
 }
 
 export function deleteDeck(id: string): void {
   const existingDecks = loadDecks();
-  const updatedDecks = existingDecks.filter((deck) => deck.id !== id);
+  const updatedDecks = existingDecks.filter((d) => d.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedDecks));
 }

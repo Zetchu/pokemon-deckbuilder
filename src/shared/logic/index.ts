@@ -1,12 +1,12 @@
-import type { Card, DeckItem } from '../types';
+import type { PokemonCard, DeckItem } from '../pokemon/types';
 
 export type State = {
-  availableCards: Card[];
+  availableCards: PokemonCard[];
   deck: DeckItem[];
 };
 
 export function createInitialState(
-  cards: Card[],
+  cards: PokemonCard[],
   initialDeck: DeckItem[] = []
 ): State {
   return {

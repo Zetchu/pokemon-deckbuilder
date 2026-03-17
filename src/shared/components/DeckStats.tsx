@@ -1,133 +1,137 @@
-import {
-  Box,
-  Paper,
-  Typography,
-  LinearProgress,
-  Stack,
-  Tooltip,
-} from '@mui/material';
+import { Paper, Typography, Stack, Chip, Alert } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import type { DeckItem } from '../types';
+import type { DeckItem } from '../pokemon/types';
 
 interface DeckStatsProps {
   items: DeckItem[];
 }
 
 export default function DeckStats({ items }: DeckStatsProps) {
-  // Mana Curve Stats
-  const manaCurve = items.reduce(
+  // Category Breakdown
+  const categoryCounts = items.reduce(
     (acc, item) => {
-      const cost = item.attributes?.energy ?? item.cost ?? 0;
-      const bucket = cost > 7 ? '7+' : cost.toString();
-      acc[bucket] = (acc[bucket] || 0) + item.count;
+      acc[item.category] = (acc[item.category] || 0) + item.count;
       return acc;
     },
-    {} as Record<string, number>
+    { Pokemon: 0, Trainer: 0, Energy: 0 } as Record<string, number>
   );
-
-  const maxCount = Math.max(...Object.values(manaCurve), 1);
-  const costLabels = ['0', '1', '2', '3', '4', '5', '6', '7+'];
 
   // Type Distribution
-  const typeDistribution = items.reduce(
+  const typeCounts = items.reduce(
     (acc, item) => {
-      const type = item.classification?.type || item.type || 'Unknown';
-      acc[type] = (acc[type] || 0) + item.count;
+      if (item.types) {
+        item.types.forEach((t) => {
+          acc[t] = (acc[t] || 0) + item.count;
+        });
+      }
       return acc;
     },
     {} as Record<string, number>
   );
 
-  const totalCards = items.reduce((sum, item) => sum + item.count, 0);
+  // Average HP
+  const pokemonItems = items.filter((i) => i.category === 'Pokemon');
+  const totalHp = pokemonItems.reduce(
+    (sum, item) => sum + (item.hp || 0) * item.count,
+    0
+  );
+  const totalPokemonCount = pokemonItems.reduce((sum, i) => sum + i.count, 0);
+  const avgHp = totalPokemonCount ? Math.round(totalHp / totalPokemonCount) : 0;
+
+  // Evolution Check
+  const hasStage1Or2 = items.some(
+    (i) =>
+      i.category === 'Pokemon' &&
+      (i.stage === 'Stage 1' || i.stage === 'Stage 2')
+  );
+  const hasBasic = items.some(
+    (i) => i.category === 'Pokemon' && i.stage === 'Basic'
+  );
+
+  const showEvolutionWarning = hasStage1Or2 && !hasBasic;
 
   return (
     <Grid container spacing={4}>
       <Grid size={{ xs: 12, md: 6 }}>
-        <Paper sx={{ p: 3, height: '100%' }}>
-          <Typography variant="h6" gutterBottom>
-            Mana Curve
-          </Typography>
-          <Box
+        <Paper sx={{ p: 3, height: '100%', bgcolor: 'background.paper' }}>
+          <Typography
+            variant="h6"
+            gutterBottom
             sx={{
-              mt: 2,
-              height: 200,
-              display: 'flex',
-              alignItems: 'flex-end',
-              gap: 1,
+              textTransform: 'uppercase',
+              fontSize: '0.9rem',
+              letterSpacing: '1px',
             }}
           >
-            {costLabels.map((cost) => {
-              const count = manaCurve[cost] || 0;
-              const heightPercent = (count / maxCount) * 100;
+            Category Breakdown
+          </Typography>
+          <Stack direction="row" spacing={1} mb={2}>
+            <Chip
+              label={`Pokemon: ${categoryCounts['Pokemon'] || 0}`}
+              sx={{ bgcolor: '#7c4dff', color: 'white', fontWeight: 'bold' }}
+            />
+            <Chip
+              label={`Trainer: ${categoryCounts['Trainer'] || 0}`}
+              sx={{ bgcolor: '#00e5ff', color: 'black', fontWeight: 'bold' }}
+            />
+            <Chip
+              label={`Energy: ${categoryCounts['Energy'] || 0}`}
+              sx={{ bgcolor: '#ff9100', color: 'black', fontWeight: 'bold' }}
+            />
+          </Stack>
 
-              return (
-                <Tooltip key={cost} title={`${count} cards cost ${cost}`} arrow>
-                  <Box
-                    sx={{
-                      flex: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography variant="caption" sx={{ mb: 0.5 }}>
-                      {count > 0 ? count : ''}
-                    </Typography>
-                    <Box
-                      sx={{
-                        width: '100%',
-                        height: `${Math.max(heightPercent, 1)}%`,
-                        bgcolor: 'primary.main',
-                        borderRadius: '4px 4px 0 0',
-                        transition: 'height 0.5s ease',
-                      }}
-                    />
-                    <Typography variant="body2" sx={{ mt: 1 }}>
-                      {cost}
-                    </Typography>
-                  </Box>
-                </Tooltip>
-              );
-            })}
-          </Box>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{
+              textTransform: 'uppercase',
+              fontSize: '0.9rem',
+              letterSpacing: '1px',
+              mt: 4,
+            }}
+          >
+            Type Distribution
+          </Typography>
+          <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            {Object.entries(typeCounts).map(([type, count]) => (
+              <Chip key={type} label={`${type}: ${count}`} variant="outlined" />
+            ))}
+            {Object.keys(typeCounts).length === 0 && (
+              <Typography variant="body2" color="text.secondary">
+                No types found
+              </Typography>
+            )}
+          </Stack>
         </Paper>
       </Grid>
 
       <Grid size={{ xs: 12, md: 6 }}>
-        <Paper sx={{ p: 3, height: '100%' }}>
-          <Typography variant="h6" gutterBottom>
-            Card Types
+        <Paper sx={{ p: 3, height: '100%', bgcolor: 'background.paper' }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{
+              textTransform: 'uppercase',
+              fontSize: '0.9rem',
+              letterSpacing: '1px',
+            }}
+          >
+            Pokemon Stats
           </Typography>
-          <Stack spacing={2} sx={{ mt: 2 }}>
-            {Object.entries(typeDistribution).map(([type, count]) => (
-              <Box key={type}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    mb: 0.5,
-                  }}
-                >
-                  <Typography variant="body2">{type}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {count} ({Math.round((count / totalCards) * 100)}%)
-                  </Typography>
-                </Box>
-                <LinearProgress
-                  variant="determinate"
-                  value={(count / totalCards) * 100}
-                  sx={{ height: 8, borderRadius: 4 }}
-                  color={
-                    type === 'Unit'
-                      ? 'success'
-                      : type === 'Action'
-                        ? 'warning'
-                        : 'info'
-                  }
-                />
-              </Box>
-            ))}
-          </Stack>
+          <Typography variant="body1">
+            <strong>Average HP:</strong> {avgHp}
+          </Typography>
+
+          {showEvolutionWarning && (
+            <Alert severity="warning" sx={{ mt: 2 }}>
+              Evolution Warning: You have evolved Pokémon but no Basic Pokémon!
+            </Alert>
+          )}
+          {!showEvolutionWarning && hasStage1Or2 && (
+            <Alert severity="info" sx={{ mt: 2 }}>
+              Ensure you have the correct Basic Pokémon for your evolutions.
+            </Alert>
+          )}
         </Paper>
       </Grid>
     </Grid>

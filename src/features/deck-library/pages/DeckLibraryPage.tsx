@@ -1,26 +1,18 @@
 import { useState } from 'react';
-import {
-  Typography,
-  Paper,
-  Button,
-  Box,
-  Divider,
-  IconButton,
-} from '@mui/material';
+import { Typography, Paper, Button, Box, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import {
-  loadDecks,
+  getDecks,
   deleteDeck,
   type SavedDeck,
 } from '../../../shared/utils/storage';
 import { useDeckActions } from '../../../shared/contexts/DeckContext';
 import { useNavigate } from 'react-router-dom';
+import IconButton from '@mui/material/IconButton';
 
 export default function DeckLibraryPage() {
-  const [decks, setDecks] = useState<SavedDeck[]>(() => loadDecks());
+  const [decks, setDecks] = useState<SavedDeck[]>(() => getDecks());
   const { loadDeck } = useDeckActions();
   const navigate = useNavigate();
 
@@ -29,11 +21,16 @@ export default function DeckLibraryPage() {
     navigate('/builder');
   };
 
+  const handleViewDeck = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/deck/${id}`);
+  };
+
   const handleDeleteDeck = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (window.confirm('Are you sure you want to delete this deck?')) {
       deleteDeck(id);
-      setDecks(loadDecks());
+      setDecks(getDecks());
     }
   };
 
@@ -69,10 +66,12 @@ export default function DeckLibraryPage() {
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   transition: 'transform 0.2s',
+                  cursor: 'pointer',
                   '&:hover': {
                     transform: 'translateY(-4px)',
                   },
                 }}
+                onClick={() => handleLoadDeck(deck)}
               >
                 <Box>
                   <Typography variant="h6" gutterBottom>
@@ -86,41 +85,22 @@ export default function DeckLibraryPage() {
                     Created: {new Date(deck.createdAt).toLocaleDateString()}
                   </Typography>
                   <Divider sx={{ my: 1 }} />
-                  <Typography variant="body2">
-                    Startipped Peak:{' '}
-                    {deck.items.filter((c) => c.name === 'Startipped Peak')
-                      .length > 0
-                      ? 'Yes'
-                      : 'No'}
-                  </Typography>
                   <Typography variant="body2" gutterBottom>
                     Total Cards:{' '}
                     {deck.items.reduce((sum, item) => sum + item.count, 0)}
                   </Typography>
                 </Box>
                 <Box
-                  sx={{
-                    mt: 2,
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    gap: 1,
-                  }}
+                  sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}
                 >
                   <Button
-                    variant="contained"
-                    startIcon={<VisibilityIcon />}
-                    onClick={() => navigate(`/deck/${deck.id}`)}
+                    size="small"
+                    onClick={(e) => handleViewDeck(deck.id, e)}
                   >
-                    View
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    startIcon={<EditIcon />}
-                    onClick={() => handleLoadDeck(deck)}
-                  >
-                    Edit
+                    View Details
                   </Button>
                   <IconButton
+                    size="small"
                     color="error"
                     onClick={(e) => handleDeleteDeck(deck.id, e)}
                   >

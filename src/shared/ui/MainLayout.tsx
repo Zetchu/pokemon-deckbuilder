@@ -30,7 +30,7 @@ export default function MainLayout() {
             component="div"
             sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', gap: 1 }}
           >
-            <span style={{ fontSize: '1.5rem' }}>⚔️</span> Riftbound
+            <span style={{ fontSize: '1.5rem' }}>🔥</span> Pokémon TCG Builder
           </Typography>
           <Box>
             <Button component={Link} to="/" color="inherit">

@@ -1,17 +1,17 @@
-import { createContext, useContext, useState } from 'react';
-import type { ReactNode } from 'react';
-import type { Card, DeckItem } from '../types';
-import { createInitialState } from '../logic';
-import type { State } from '../logic';
-import { checkDeckLimits } from '../utils/deckRules';
+import { createContext, useContext, useState, type ReactNode } from 'react';
+import type { PokemonCard, DeckItem } from '../pokemon/types';
+import { createInitialState, type State } from '../logic';
+import { checkDeckLimits } from '../pokemon/rules';
 
 type DeckContextType = {
   state: State;
+  deck: DeckItem[];
+  availableCards: PokemonCard[];
   error: string;
   activeDeckId: string | null;
   activeDeckName: string;
   actions: {
-    addCardToDeck: (card: Card) => void;
+    addCardToDeck: (card: PokemonCard) => void;
     removeCardFromDeck: (cardId: string) => void;
     loadDeck: (deck: DeckItem[], id?: string, name?: string) => void;
     clearDeck: () => void;
@@ -26,7 +26,7 @@ export function DeckProvider({
   initialDeck = [],
 }: {
   children: ReactNode;
-  initialCards: Card[];
+  initialCards: PokemonCard[];
   initialDeck?: DeckItem[];
 }) {
   const [state, setState] = useState<State>(
@@ -36,7 +36,7 @@ export function DeckProvider({
   const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
   const [activeDeckName, setActiveDeckName] = useState('');
 
-  const addCardToDeck = (card: Card) => {
+  const addCardToDeck = (card: PokemonCard) => {
     // Check limits
     const validation = checkDeckLimits(state.deck, card);
     if (!validation.allowed) {
@@ -61,11 +61,12 @@ export function DeckProvider({
   };
 
   const removeCardFromDeck = (cardId: string) => {
-    setError('');
     setState((prevState) => {
       const existingItem = prevState.deck.find((item) => item.id === cardId);
+      if (!existingItem) return prevState;
+
       let newDeck;
-      if (existingItem && existingItem.count > 1) {
+      if (existingItem.count > 1) {
         newDeck = prevState.deck.map((item) =>
           item.id === cardId ? { ...item, count: item.count - 1 } : item
         );
@@ -76,28 +77,33 @@ export function DeckProvider({
     });
   };
 
-  const loadDeck = (newDeck: DeckItem[], id?: string, name?: string) => {
-    setState((prevState) => ({ ...prevState, deck: newDeck }));
+  const loadDeck = (deck: DeckItem[], id?: string, name?: string) => {
+    setState((prev) => ({ ...prev, deck }));
     setActiveDeckId(id || null);
     setActiveDeckName(name || '');
-    setError('');
   };
 
   const clearDeck = () => {
-    setState((prevState) => ({ ...prevState, deck: [] }));
+    setState((prev) => ({ ...prev, deck: [] }));
     setActiveDeckId(null);
     setActiveDeckName('');
-    setError('');
   };
 
   return (
     <DeckContext.Provider
       value={{
         state,
+        deck: state.deck,
+        availableCards: state.availableCards,
         error,
         activeDeckId,
         activeDeckName,
-        actions: { addCardToDeck, removeCardFromDeck, loadDeck, clearDeck },
+        actions: {
+          addCardToDeck,
+          removeCardFromDeck,
+          loadDeck,
+          clearDeck,
+        },
       }}
     >
       {children}
@@ -108,22 +114,21 @@ export function DeckProvider({
 // eslint-disable-next-line react-refresh/only-export-components
 export function useDeck() {
   const context = useContext(DeckContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useDeck must be used within a DeckProvider');
   }
   return {
-    ...context.state,
-    error: context.error,
-    activeDeckId: context.activeDeckId,
-    activeDeckName: context.activeDeckName,
-    ...context.actions,
+    ...context, // Expose everything
+    ...context.state, // Flatten state for convenience
+    ...context.actions, // Flatten actions
   };
 }
 
+// Keep backward compatibility if used elsewhere, or just rely on useDeck
 // eslint-disable-next-line react-refresh/only-export-components
 export function useDeckActions() {
   const context = useContext(DeckContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useDeckActions must be used within a DeckProvider');
   }
   return context.actions;

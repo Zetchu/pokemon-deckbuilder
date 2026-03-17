@@ -5,10 +5,10 @@ export default function HomePage() {
   return (
     <Box sx={{ p: 4, textAlign: 'center' }}>
       <Typography variant="h2" gutterBottom>
-        Welcome to Riftbound Decksmith!
+        Welcome to Pokémon TCG Builder!
       </Typography>
       <Typography variant="h5" sx={{ mb: 4 }}>
-        Build your ultimate deck and conquer the rift.
+        Build your ultimate deck and become a master.
       </Typography>
       <Button variant="contained" component={Link} to="/builder" startIcon="🔥">
         Start Building!
