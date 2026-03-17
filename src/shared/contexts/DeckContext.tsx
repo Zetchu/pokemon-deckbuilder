@@ -37,7 +37,6 @@ export function DeckProvider({
   const [activeDeckName, setActiveDeckName] = useState('');
 
   const addCardToDeck = (card: PokemonCard) => {
-    // Check limits
     const validation = checkDeckLimits(state.deck, card);
     if (!validation.allowed) {
       setError(validation.reason || 'Cannot add this card.');
@@ -118,13 +117,12 @@ export function useDeck() {
     throw new Error('useDeck must be used within a DeckProvider');
   }
   return {
-    ...context, // Expose everything
-    ...context.state, // Flatten state for convenience
-    ...context.actions, // Flatten actions
+    ...context,
+    ...context.state,
+    ...context.actions,
   };
 }
 
-// Keep backward compatibility if used elsewhere, or just rely on useDeck
 // eslint-disable-next-line react-refresh/only-export-components
 export function useDeckActions() {
   const context = useContext(DeckContext);

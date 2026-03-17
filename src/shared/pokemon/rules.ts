@@ -20,9 +20,6 @@ export const checkDeckLimits = (
   const existingItem = deck.find((item) => item.id === newCard.id);
   const currentCount = existingItem ? existingItem.count : 0;
 
-  // 4-of Rule Exception: Basic Energy
-  // The name often contains "Basic Energy" or we check the category logic.
-  // Prompt says: If category === 'Energy' and the name includes "Basic"
   const isBasicEnergy =
     newCard.category === 'Energy' && newCard.name.includes('Basic');
 
@@ -40,12 +37,10 @@ export const validateDeck = (deck: DeckItem[]): string[] => {
   const errors: string[] = [];
   const totalCards = deck.reduce((sum, item) => sum + item.count, 0);
 
-  // 60-Card Rule
   if (totalCards !== 60) {
     errors.push(`Deck must have exactly 60 cards (currently ${totalCards}).`);
   }
 
-  // Basic Pokemon Requirement
   const hasBasicPokemon = deck.some(
     (card) => card.category === 'Pokemon' && card.stage === 'Basic'
   );

@@ -7,7 +7,6 @@ interface DeckStatsProps {
 }
 
 export default function DeckStats({ items }: DeckStatsProps) {
-  // Category Breakdown
   const categoryCounts = items.reduce(
     (acc, item) => {
       acc[item.category] = (acc[item.category] || 0) + item.count;
@@ -16,7 +15,6 @@ export default function DeckStats({ items }: DeckStatsProps) {
     { Pokemon: 0, Trainer: 0, Energy: 0 } as Record<string, number>
   );
 
-  // Type Distribution
   const typeCounts = items.reduce(
     (acc, item) => {
       if (item.types) {
@@ -29,7 +27,6 @@ export default function DeckStats({ items }: DeckStatsProps) {
     {} as Record<string, number>
   );
 
-  // Average HP
   const pokemonItems = items.filter((i) => i.category === 'Pokemon');
   const totalHp = pokemonItems.reduce(
     (sum, item) => sum + (item.hp || 0) * item.count,
@@ -38,7 +35,6 @@ export default function DeckStats({ items }: DeckStatsProps) {
   const totalPokemonCount = pokemonItems.reduce((sum, i) => sum + i.count, 0);
   const avgHp = totalPokemonCount ? Math.round(totalHp / totalPokemonCount) : 0;
 
-  // Evolution Check
   const hasStage1Or2 = items.some(
     (i) =>
       i.category === 'Pokemon' &&

@@ -36,11 +36,9 @@ export default function DeckBuilderPage() {
     let saved;
     try {
       if (activeDeckId) {
-        // Update existing
         saved = updateDeck(activeDeckId, deckName, deck);
         alert('Deck updated successfully!');
       } else {
-        // Save new
         saved = saveDeck(deckName, deck);
         alert('Deck saved successfully!');
       }

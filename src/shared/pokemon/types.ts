@@ -1,11 +1,11 @@
 export interface PokemonCard {
   id: string;
-  localId: string; // The number on the card in the set
+  localId: string;
   name: string;
-  image?: string; // High-res URL provided by TCGdex
+  image?: string;
   category: 'Pokemon' | 'Energy' | 'Trainer';
-  types?: string[]; // e.g., ["Fire", "Water"]
-  stage?: string; // e.g., "Basic", "Stage 1", "Stage 2"
+  types?: string[];
+  stage?: string;
   rarity: string;
   set: {
     id: string;

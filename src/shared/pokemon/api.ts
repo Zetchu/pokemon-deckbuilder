@@ -9,8 +9,6 @@ export async function fetchBaseSetCards(): Promise<PokemonCard[]> {
   const data = await response.json();
   const cardList = data.cards;
 
-  // We need to fetch details for each card to get category, types, hp, etc.
-  // Limiting concurrency to avoid overwhelming the browser/API
   const detailedCards: PokemonCard[] = [];
   const batchSize = 5;
 
