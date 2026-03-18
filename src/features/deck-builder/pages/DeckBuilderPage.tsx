@@ -6,7 +6,10 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
   TextField,
+  Typography,
+  Snackbar,
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import SaveIcon from '@mui/icons-material/Save';
@@ -23,10 +26,26 @@ export default function DeckBuilderPage() {
   const { deck, error, activeDeckId, activeDeckName, loadDeck, clearDeck } =
     useDeck();
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [deckName, setDeckName] = useState(activeDeckName);
+  const [deckName, setDeckName] = useState(activeDeckName || '');
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>(
+    'success'
+  );
+
+  const handleCloseSnackbar = () => setSnackbarOpen(false);
+
+  const showSnackbar = (
+    message: string,
+    severity: 'success' | 'error' = 'success'
+  ) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
   const handleOpenSaveDialog = () => {
-    setDeckName(activeDeckName);
+    setDeckName(activeDeckName || '');
     setSaveDialogOpen(true);
   };
 
@@ -37,15 +56,15 @@ export default function DeckBuilderPage() {
     try {
       if (activeDeckId) {
         saved = updateDeck(activeDeckId, deckName, deck);
-        alert('Deck updated successfully!');
+        showSnackbar('Deck updated successfully!', 'success');
       } else {
         saved = saveDeck(deckName, deck);
-        alert('Deck saved successfully!');
+        showSnackbar('Deck saved successfully!', 'success');
       }
       loadDeck(deck, saved.id, saved.name);
       setSaveDialogOpen(false);
     } catch (e) {
-      alert('Error saving deck');
+      showSnackbar('Error saving deck', 'error');
       console.error(e);
     }
   };
@@ -74,23 +93,28 @@ export default function DeckBuilderPage() {
     >
       <ValidationOverlay />
 
-      <Box sx={{ mb: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleNewDeck}
-        >
-          New Deck
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          startIcon={<SaveIcon />}
-          onClick={handleOpenSaveDialog}
-          disabled={deck.length === 0}
-        >
-          {activeDeckId ? 'Update Deck' : 'Save Deck'}
-        </Button>
+      <Box sx={{ mb: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Typography variant="h4" component="h1">
+          {activeDeckName || 'New Deck'}
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleNewDeck}
+          >
+            New Deck
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<SaveIcon />}
+            onClick={handleOpenSaveDialog}
+            disabled={deck.length === 0}
+          >
+            {activeDeckId ? 'Update Deck' : 'Save Deck'}
+          </Button>
+        </Box>
         {error && (
           <Alert severity="error" sx={{ flexGrow: 1 }}>
             {error}
@@ -114,7 +138,7 @@ export default function DeckBuilderPage() {
       </Grid>
 
       <Dialog open={saveDialogOpen} onClose={() => setSaveDialogOpen(false)}>
-        <DialogTitle>Save Your Deck</DialogTitle>
+        <DialogTitle>{activeDeckId ? 'Update Deck' : 'Save Deck'}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -126,16 +150,27 @@ export default function DeckBuilderPage() {
             value={deckName}
             onChange={(e) => setDeckName(e.target.value)}
           />
-          <Box
-            sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end', gap: 1 }}
-          >
-            <Button onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSaveDeck} variant="contained">
-              Save
-            </Button>
-          </Box>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
+          <Button onClick={handleSaveDeck} variant="contained">
+            Save
+          </Button>
+        </DialogActions>
       </Dialog>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }

@@ -7,6 +7,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { getDeck } from '../../../shared/utils/storage';
 import { useDeckActions } from '../../../shared/contexts/DeckContext';
 import DeckStats from '../../../shared/components/DeckStats';
+import DeckCharts from '../components/DeckCharts';
 import type { DeckItem } from '../../../shared/pokemon/types';
 
 export default function DeckDetailsPage() {
@@ -96,6 +97,8 @@ export default function DeckDetailsPage() {
         </Box>
 
         <DeckStats items={deck.items} />
+
+        <DeckCharts items={deck.items} />
       </Paper>
     </Box>
   );

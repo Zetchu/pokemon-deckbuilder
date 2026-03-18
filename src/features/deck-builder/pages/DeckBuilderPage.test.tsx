@@ -36,11 +36,6 @@ describe('DeckBuilderPage', () => {
   });
 
   it('shows error alert when context has error', () => {
-    // We can spy on useDeck if we want to force an error state,
-    // or just trigger it via context actions if we weren't mocking children.
-    // Here, let's try to mock the hook return value for specific control.
-
-    // Using vi.spyOn to override the hook implementation for this test
     const useDeckSpy = vi.spyOn(DeckContextModule, 'useDeck');
     useDeckSpy.mockReturnValue({
       deck: [],
@@ -88,7 +83,6 @@ describe('DeckBuilderPage', () => {
         <DeckBuilderPage />
       </DeckProvider>
     );
-    // Enable the button by having a deck item (provided in initialDeck)
 
     const saveButton = screen.getByText('Save Deck');
     expect(saveButton).not.toBeDisabled();

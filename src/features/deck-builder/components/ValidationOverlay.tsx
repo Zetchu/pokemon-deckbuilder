@@ -1,61 +1,76 @@
 import { useDeck } from '../../../shared/contexts/DeckContext';
 import { validateDeck } from '../../../shared/pokemon/rules';
-import { Alert, AlertTitle, Box, Collapse, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  Fab,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
+import WarningIcon from '@mui/icons-material/Warning';
 import { useState, useMemo } from 'react';
 
 export default function ValidationOverlay() {
   const { deck } = useDeck();
-
-  // Memoize errors so referential equality is preserved if deck hasn't changed
   const errors = useMemo(() => validateDeck(deck), [deck]);
+  const [open, setOpen] = useState(false);
 
-  // State to track if user dismissed the current error set
-  const [dismissed, setDismissed] = useState(false);
-  const [prevDeck, setPrevDeck] = useState(deck);
+  // Consider deck valid if there are no errors
+  const hasErrors = errors.length > 0;
 
-  // Derived state pattern: reset dismissal when deck updates
-  if (deck !== prevDeck) {
-    setPrevDeck(deck);
-    setDismissed(false);
-  }
+  // Only show if there is actually a deck being built
+  if (deck.length === 0) return null;
 
-  if (errors.length === 0) return null;
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        bottom: 24,
-        right: 24,
-        zIndex: 2000,
-        maxWidth: 400,
-      }}
-    >
-      <Collapse in={!dismissed}>
-        <Alert
-          severity="error"
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setDismissed(true);
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
+    <>
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          zIndex: 2000,
+        }}
+      >
+        <Fab
+          color={hasErrors ? 'error' : 'primary'}
+          aria-label="deck rules"
+          onClick={handleOpen}
         >
-          <AlertTitle>Deck Issues</AlertTitle>
-          <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
-            {errors.map((err, index) => (
-              <li key={index}>{err}</li>
-            ))}
-          </ul>
-        </Alert>
-      </Collapse>
-    </Box>
+          {hasErrors ? <WarningIcon /> : <InfoIcon />}
+        </Fab>
+      </Box>
+
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{hasErrors ? 'Deck Issues' : 'Deck Status'}</DialogTitle>
+        <DialogContent>
+          {hasErrors ? (
+            <Alert severity="error">
+              <AlertTitle>Invalid Deck</AlertTitle>
+              <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
+                {errors.map((err, index) => (
+                  <li key={index}>{err}</li>
+                ))}
+              </ul>
+            </Alert>
+          ) : (
+            <Alert severity="success">
+              <AlertTitle>Deck Valid</AlertTitle>
+              Your deck meets all the requirements!
+            </Alert>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
