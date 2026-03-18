@@ -1,5 +1,5 @@
 // src/utils/storage.ts
-import type { DeckItem } from '../pokemon/types';
+import type { DeckItem } from './types';
 
 export interface SavedDeck {
   id: string;

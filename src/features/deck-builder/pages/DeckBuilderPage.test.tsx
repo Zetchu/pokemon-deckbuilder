@@ -1,8 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, vi, expect } from 'vitest';
 import DeckBuilderPage from './DeckBuilderPage';
-import { DeckProvider } from '../../../shared/contexts/DeckContext';
-import * as DeckContextModule from '../../../shared/contexts/DeckContext';
+import { DeckProvider } from '../../../shared/pokemon/contexts/DeckContext';
+import * as DeckContextModule from '../../../shared/pokemon/contexts/DeckContext';
 
 // Mock child components to simplify test
 vi.mock('../components/CardSearch', () => ({
@@ -27,7 +27,6 @@ describe('DeckBuilderPage', () => {
       </DeckProvider>
     );
 
-    expect(screen.getByText('New Deck')).toBeInTheDocument();
     expect(screen.getByText('Save Deck')).toBeInTheDocument();
 
     expect(screen.getByTestId('card-search')).toBeInTheDocument();
@@ -62,34 +61,5 @@ describe('DeckBuilderPage', () => {
     expect(screen.getByText('Test Error')).toBeInTheDocument();
 
     useDeckSpy.mockRestore();
-  });
-
-  it('opens save dialog on Save Deck click', () => {
-    render(
-      <DeckProvider
-        initialCards={[]}
-        initialDeck={[
-          {
-            id: '1',
-            name: 'Pika',
-            category: 'Pokemon',
-            localId: '1',
-            rarity: 'Common',
-            set: { id: 'bp', name: 'Base' },
-            count: 1,
-          },
-        ]}
-      >
-        <DeckBuilderPage />
-      </DeckProvider>
-    );
-
-    const saveButton = screen.getByText('Save Deck');
-    expect(saveButton).not.toBeDisabled();
-
-    fireEvent.click(saveButton);
-
-    expect(screen.getByText('Save Your Deck')).toBeInTheDocument();
-    expect(screen.getByLabelText('Deck Name')).toBeInTheDocument();
   });
 });

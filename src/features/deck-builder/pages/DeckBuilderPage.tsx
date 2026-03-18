@@ -18,8 +18,8 @@ import AddIcon from '@mui/icons-material/Add';
 import DeckSidebar from '../components/DeckSidebar';
 
 import ValidationOverlay from '../components/ValidationOverlay';
-import { useDeck } from '../../../shared/contexts/DeckContext';
-import { saveDeck, updateDeck } from '../../../shared/utils/storage';
+import { useDeck } from '../../../shared/pokemon/contexts/DeckContext';
+import { saveDeck, updateDeck } from '../../../shared/pokemon/storage';
 import CardSearch from '../components/CardSearch';
 
 export default function DeckBuilderPage() {

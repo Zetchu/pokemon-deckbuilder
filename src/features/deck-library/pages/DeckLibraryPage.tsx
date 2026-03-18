@@ -6,8 +6,8 @@ import {
   getDecks,
   deleteDeck,
   type SavedDeck,
-} from '../../../shared/utils/storage';
-import { useDeckActions } from '../../../shared/contexts/DeckContext';
+} from '../../../shared/pokemon/storage';
+import { useDeckActions } from '../../../shared/pokemon/contexts/DeckContext';
 import { useNavigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 

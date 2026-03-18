@@ -1,6 +1,6 @@
 import { Paper, Typography, Stack, Chip, Alert } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import type { DeckItem } from '../pokemon/types';
+import type { DeckItem } from '../types';
 
 interface DeckStatsProps {
   items: DeckItem[];

@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { DeckProvider, useDeck } from './DeckContext';
-import type { PokemonCard } from '../pokemon/types';
+import type { PokemonCard } from '../types';
 
 const mockCard: PokemonCard = {
   id: '1',

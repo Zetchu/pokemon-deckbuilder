@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
-import type { PokemonCard, DeckItem } from '../pokemon/types';
+import type { PokemonCard, DeckItem } from '../types';
 import { createInitialState, type State } from '../logic';
-import { checkDeckLimits } from '../pokemon/rules';
+import { checkDeckLimits } from '../rules';
 
 type DeckContextType = {
   state: State;

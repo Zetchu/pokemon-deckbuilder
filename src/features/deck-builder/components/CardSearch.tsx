@@ -1,5 +1,8 @@
 import { useState, useMemo } from 'react';
-import { useDeck, useDeckActions } from '../../../shared/contexts/DeckContext';
+import {
+  useDeck,
+  useDeckActions,
+} from '../../../shared/pokemon/contexts/DeckContext';
 import {
   Card,
   CardMedia,

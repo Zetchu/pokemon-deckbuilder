@@ -4,9 +4,9 @@ import { Box, Typography, Button, Paper, Divider, Chip } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 
-import { getDeck } from '../../../shared/utils/storage';
-import { useDeckActions } from '../../../shared/contexts/DeckContext';
-import DeckStats from '../../../shared/components/DeckStats';
+import { getDeck } from '../../../shared/pokemon/storage';
+import { useDeckActions } from '../../../shared/pokemon/contexts/DeckContext';
+import DeckStats from '../../../shared/pokemon/components/DeckStats';
 import DeckCharts from '../components/DeckCharts';
 import type { DeckItem } from '../../../shared/pokemon/types';
 

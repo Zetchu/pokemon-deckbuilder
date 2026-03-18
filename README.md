@@ -1,17 +1,17 @@
-# Riftbound Decksmith
+# Pokemon Decksmith
 
 ## Project Description
 
-Riftbound Decksmith is a specialized deck-building and analytics web application for the _Riftbound TCG_. It provides players with a clean, fast interface to browse the entire card database, theory-craft new decks, and validate them against official tournament rules.
+Pokémon Decksmith is a specialized deck-building and analytics web application for the **Pokémon Trading Card Game**. It provides players with a clean, fast interface to browse the card database, theory-craft new decks, and validate them against standard deck construction rules.
 
 Built with scalability in mind, this project uses a feature-based architecture and modern React patterns (React 19) to ensure maintainability and performance.
 
 ## Features
 
 - **Deck Library:** Save, load, and manage multiple decks locally.
-- **Deck Builder:** Interactive deck creation with real-time validation (40-card limit, max 3 copies per card).
-- **Card Database:** Browse available cards (mock data currently).
-- **Analysis:** Real-time stats on deck composition.
+- **Deck Builder:** Interactive deck creation with real-time validation (60-card limit, max 4 copies per card).
+- **Card Database:** Browse available cards (Powered by TCGdex API - Base Set).
+- **Analysis:** Real-time visual charts for Card Type, Pokémon Type, and HP distribution.
 - **Dark Mode:** Validated accessible color scheme.
 
 ## Architecture Overview
@@ -19,12 +19,12 @@ Built with scalability in mind, this project uses a feature-based architecture a
 This project follows a **Feature-Based Architecture** to ensure separation of concerns and scalability.
 
 - **`src/features/`**: Contains domain-specific code (e.g., `deck-builder`, `deck-library`). Each feature is a self-contained module with its own components and pages.
-- **`src/shared/`**: Contains shared utilities, components, contexts, and hooks used across multiple features.
-- **`src/shared/hooks/`**: Custom hooks, including `useAsync` which leverages React 19's `use` hook for suspense-compatible data fetching.
-- **`src/shared/contexts/`**: Global state management (e.g., `DeckContext` for deck state, `ColorModeContext` for theming).
-- **`src/shared/api/`**: API layer using the "Service-as-Hook" pattern.
+- **`src/shared/`**: Organized by domain/feature:
+  - **`pokemon/`**: Core domain logic, types, API, and components for Pokemon TCG.
+  - **`ui/`**: Generic UI components, layouts, and theming.
+  - **`core/`**: Core application utilities and hooks (e.g., `useAsync`).
 
-### key Technologies
+### Key Technologies
 
 - **React 19**: Leveraging concurrent features and `use` hook.
 - **Vite**: Fast build tool and dev server.
@@ -35,7 +35,8 @@ This project follows a **Feature-Based Architecture** to ensure separation of co
 
 ## Known Issues
 
-- **Production API:** The card database API (https://api.riftcodex.com) works in local development (via proxy) but is currently blocked in production environments due to CORS restrictions, as it is a fan-made API without official support. In production builds, the app may fail to load cards.
+- **API Rate Limiting:** The application fetches card data from the public TCGdex API. Heavy usage might trigger rate limits or slower load times on the initial fetch.
+- **Mobile Layout:** Chart visualizations may require horizontal scrolling on very small screens.
 
 ## Getting Started
 
@@ -70,20 +71,27 @@ src/
 │   ├── deck-builder/   # Deck creation logic and UI
 │   ├── deck-library/   # Saved deck management
 │   └── home/           # Landing page
-├── shared/             # Shared resources
-│   ├── api/            # Data fetching hooks
-│   ├── components/     # Reusable UI components (Layouts, etc.)
-│   ├── contexts/       # Global React Contexts
-│   ├── hooks/          # Custom hooks (useAsync)
-│   ├── logic/          # Core business logic (State creation)
-│   ├── utils/          # Helper functions (Storage, Validation)
-│   └── types/          # TypeScript definitions
+├── shared/             # Shared resources by domain
+│   ├── pokemon/        # Pokemon TCG domain logic
+│   │   ├── api.ts      # Data fetching
+│   │   ├── components/ # Domain-specific UI
+│   │   ├── contexts/   # Domain state (DeckContext)
+│   │   ├── rules.ts    # Validation logic
+│   │   ├── storage.ts  # Persistence logic
+│   │   └── types.ts    # Domain types
+│   ├── ui/             # Generic UI
+│   │   ├── contexts/   # Theme context
+│   │   └── MainLayout.tsx # Layout components
+│   └── core/           # utilities & hooks
+│       └── useAsync.ts # Async state hook
 ├── App.tsx             # Main application component & Routing
 └── main.tsx            # Entry point
 ```
 
 ## Potential Future Features
 
-- **Advanced Card Filtering:** Sort by faction, cost, etc.
-- **Import/Export:** Share decks via clipboard codes.
+HP, Retreat Cost, Weakness, etc.
+
+- **Import/Export:** Share decks via clipboard codes or PTCGL format.
+- **Multiple Sets:** Expand card database beyond Base Set
 - **Mana Curve Analysis:** Visual charts for deck balance.

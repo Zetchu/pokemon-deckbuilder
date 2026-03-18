@@ -13,7 +13,7 @@ const ColorModeContext = createContext<ColorModeContextType>({
   mode: 'dark',
 });
 
-import { getTheme } from '../theme/theme';
+import { getTheme } from '../theme';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useColorMode = () => useContext(ColorModeContext);

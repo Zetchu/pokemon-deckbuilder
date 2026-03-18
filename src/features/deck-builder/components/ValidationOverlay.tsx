@@ -1,4 +1,4 @@
-import { useDeck } from '../../../shared/contexts/DeckContext';
+import { useDeck } from '../../../shared/pokemon/contexts/DeckContext';
 import { validateDeck } from '../../../shared/pokemon/rules';
 import {
   Alert,

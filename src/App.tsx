@@ -4,7 +4,7 @@ import HomePage from './features/home/pages/HomePage';
 import DeckBuilderPage from './features/deck-builder/pages/DeckBuilderPage';
 import DeckLibraryPage from './features/deck-library/pages/DeckLibraryPage';
 import DeckDetailsPage from './features/deck-details/pages/DeckDetailsPage';
-import { DeckProvider } from './shared/contexts/DeckContext';
+import { DeckProvider } from './shared/pokemon/contexts/DeckContext';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Suspense, useEffect, useState } from 'react';
 import { fetchBaseSetCards } from './shared/pokemon/api';
