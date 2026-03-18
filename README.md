@@ -4,7 +4,7 @@
 
 Pokémon Decksmith is a specialized deck-building and analytics web application for the **Pokémon Trading Card Game**. It provides players with a clean, fast interface to browse the card database, theory-craft new decks, and validate them against standard deck construction rules.
 
-Built with scalability in mind, this project uses a feature-based architecture and modern React patterns (React 19) to ensure maintainability and performance.
+Built with scalability in mind, this project uses a feature-based architecture and modern React patterns (React 19) to ensure maintainability and performance..
 
 ## Features
 
