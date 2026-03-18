@@ -9,7 +9,7 @@ import {
   IconButton,
 } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-import { useColorMode } from '../contexts/ColorModeContext';
+import { useColorMode } from './contexts/ColorModeContext';
 
 export default function MainLayout() {
   const { mode, toggleColorMode } = useColorMode();
